@@ -1,24 +1,3 @@
-"""
-Single-file Flask app: InstaMuse
-Features:
-- Upload an image and select options (caption length, tone, genres, region)
-- Preview image client-side
-- Generate captions + song suggestions (uses a placeholder function to call Gemini API)
-- Beautiful, responsive UI using inline CSS + vanilla JS
-
-How to run:
-1. Save this file as app.py
-2. Create a virtualenv: python -m venv venv && source venv/bin/activate (or venv\Scripts\activate on Windows)
-3. pip install flask pillow python-dotenv requests
-4. Create a .env file with GEMINI_API_KEY=your_key (optional; the app will run with mocked outputs if missing)
-5. flask run --host=0.0.0.0 --port=5000
-
-Notes about Gemini integration:
-- There's a function `call_gemini(prompt, image_bytes)` below. I intentionally left it as a clear integration point. Implement the actual HTTP request to Google Gemini or your preferred model there using your pro key.
-- If GEMINI_API_KEY is present, the app will attempt a "fake" call here for safety. Replace with your real HTTP client code.
-
-This design keeps everything in one file so you can experiment quickly. If you want, I can split into templates/static files next.
-"""
 
 from flask import Flask, request, render_template_string, jsonify
 from werkzeug.utils import secure_filename
@@ -310,7 +289,7 @@ INDEX_HTML = '''
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>InstaMuse — caption & song suggester</title>
+  <title>LyricLens - caption & song suggester</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root{
@@ -367,7 +346,7 @@ INDEX_HTML = '''
       align-items:center;
       justify-content:center;
       font-weight:900;
-      font-size:24px;
+      font-size:20px;
       color:white;
       box-shadow:0 8px 32px rgba(139,92,246,0.3);
       animation:glow 3s ease-in-out infinite alternate;
@@ -659,14 +638,14 @@ INDEX_HTML = '''
   <div class="container">
     <div class="top">
       <div class="logo">
-        <div class="mark">IM</div>
+        <div class="mark">LL</div>
         <div>
-          <h1>InstaMuse</h1>
-          <p class="lead">Aesthetic captions and song picks for every photo — powered by AI.</p>
+          <h1>LyricLens</h1>
+          <p class="lead">Aesthetic captions and song picks for every photo - powered by AI.</p>
         </div>
       </div>
       <div style="margin-left:auto;text-align:right">
-        <div class="muted">Pro tip: choose the style + length for tighter results</div>
+        <div class="muted">Pro tip: choose the style + length for better results</div>
       </div>
     </div>
 
@@ -683,9 +662,9 @@ INDEX_HTML = '''
           <form id="optionsForm" onsubmit="return false;">
             <div class="form-row" style="margin-top:14px">
               <select id="captionLength">
-                <option value="short">Short — 5–10 words</option>
-                <option value="medium" selected>Medium — 11–20 words</option>
-                <option value="long">Long — 21–35 words</option>
+                <option value="short">Short - 5–10 words</option>
+                <option value="medium" selected>Medium - 11–20 words</option>
+                <option value="long">Long - 21–35 words</option>
               </select>
               <select id="captionTone">
                 <option value="cute">Cute / Playful</option>
@@ -730,15 +709,15 @@ INDEX_HTML = '''
         <p class="muted" style="margin:6px 0 12px">Tap copy to paste directly into Instagram, or click preview to audition a suggested song on YouTube.</p>
 
         <div id="resultsArea">
-          <div class="muted">No results yet — upload a photo and choose Generate.</div>
+          <div class="muted">No results yet - upload a photo and choose Generate.</div>
         </div>
 
       </div>
     </div>
 
     <footer>
-      <div style="margin-bottom:8px;">🎨 Made with care • InstaMuse — AI-powered captions & songs tailored to your photos</div>
-      <div class="muted">✨ Try different tones and regions for personalized results • 🎵 Songs matched to your selected region</div>
+      <div style="margin-bottom:8px;">LyricLens - AI-powered captions & songs tailored to your photos</div>
+      <div class="muted">✨ Try different tones and regions for personalized results 🎵</div>
     </footer>
   </div>
 
@@ -792,7 +771,7 @@ async function handleGenerate(){
   const mood = document.getElementById('songMood').value;
   const num = parseInt(document.getElementById('numOptions').value)||3;
 
-  setStatus('Generating — hang on a moment...', true);
+  setStatus('Generating - hang on a moment', true);
   resultsArea.innerHTML = '';
 
   const form = new FormData();
@@ -843,7 +822,7 @@ async function handleGenerate(){
 
     songs.forEach((s,i)=>{
       const card = document.createElement('div'); card.className='result-card';
-      const p = document.createElement('div'); p.innerHTML = '<strong>'+s.title+'</strong> — '+s.artist; p.className='song-text';
+      const p = document.createElement('div'); p.innerHTML = '<strong>'+s.title+'</strong> - '+s.artist; p.className='song-text';
       const regionChip = document.createElement('div'); regionChip.style.marginTop='8px';
       regionChip.innerHTML = '<span class="chip">'+region+'</span><span class="chip">'+mood+'</span>';
       const actions = document.createElement('div'); actions.className='actions';
@@ -851,7 +830,7 @@ async function handleGenerate(){
       yt.onclick = ()=>{ window.open('https://www.youtube.com/results?search_query='+encodeURIComponent(s.title+' '+s.artist), '_blank') };
       const copy = document.createElement('button'); copy.className='btn-small'; copy.textContent='Copy';
       copy.onclick = ()=>{ 
-        navigator.clipboard.writeText(s.title+' — '+s.artist); 
+        navigator.clipboard.writeText(s.title+' - '+s.artist); 
         copy.textContent='Copied ✓'; 
         copy.className='btn-small success';
         setTimeout(()=>{copy.textContent='Copy'; copy.className='btn-small';},1500); 
@@ -866,7 +845,7 @@ async function handleGenerate(){
 
   }catch(err){
     console.error(err);
-    setStatus('Something went wrong — check console', false);
+    setStatus('Something went wrong - check console', false);
   }finally{ setStatus('', false); }
 }
 
