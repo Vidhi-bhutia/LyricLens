@@ -155,9 +155,6 @@ stack-data==0.6.3
 streamlit==1.44.0
 sympy==1.13.3
 tenacity==9.0.0
-tensorboard==2.19.0
-tensorboard-data-server==0.7.2
-tensorflow==2.19.0
 termcolor==3.0.1
 textblob==0.18.0.post0
 threadpoolctl==3.5.0
